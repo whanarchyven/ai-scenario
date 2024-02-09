@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import ReactFlow, {
     ReactFlowProvider,
     addEdge,
@@ -9,11 +9,25 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import Sidebar from './Sidebar';
-import Spider from "@/app/components/nodes/Spider";
+import Spider from "@/app/components/nodes/spider";
 
 import './dnd.css';
-import Voice from "@/app/components/nodes/Voice";
-import Aicharm from "@/app/components/nodes/Aicharm";
+import VoiceRecognizer from "@/app/components/nodes/voice-recognizer";
+import Aicharm from "@/app/components/nodes/aicharm";
+import SettingsSpider from "@/app/components/nodes/spider/Settings";
+import SettingsConnector from "@/app/components/nodes/connector/Settings";
+import SettingsSummarizator from "@/app/components/nodes/summarizator/Settings";
+import SettingsPrompter from "@/app/components/nodes/prompter/Settings";
+import SettingsVoiceRecognizer from "@/app/components/nodes/voice-recognizer/Settings";
+import SettingsVoiceGenerator from "@/app/components/nodes/voice-generator/Settings";
+import SettingsImageGenerator from "@/app/components/nodes/image-generator/Settings";
+import SettingsVideoGenerator from "@/app/components/nodes/video-generator/Settings";
+import Connector from "@/app/components/nodes/connector";
+import Summarizator from "@/app/components/nodes/summarizator";
+import Prompter from "@/app/components/nodes/prompter";
+import VoiceGenerator from "@/app/components/nodes/voice-generator";
+import ImageGenerator from "@/app/components/nodes/image-generator";
+import VideoGenerator from "@/app/components/nodes/video-generator";
 
 const initialNodes = [
     {
@@ -27,13 +41,24 @@ const initialNodes = [
 ];
 
 let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `dndnode_${Math.floor(Math.random() * 10000000000)}`;
 
 const nodeTypes = {
     spiderNode: Spider,
-    voiceNode:Voice,
-    aicharmNode:Aicharm
+    voiceRecognizerNode:VoiceRecognizer,
+    aicharmNode:Aicharm,
+    connectorNode:Connector,
+    summarizatorNode:Summarizator,
+    prompterNode:Prompter,
+    voiceGeneratorNode:VoiceGenerator,
+    imageGeneratorNode:ImageGenerator,
+    videoGeneratorNode:VideoGenerator
 };
+
+
+
+
+
 const DnDFlow = () => {
     const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -80,6 +105,44 @@ const DnDFlow = () => {
         [reactFlowInstance],
     );
 
+    const [tokens,setTokens]=useState(0)
+
+    const RenderSettings=(node)=>{
+        switch (node.data.label){
+            case "spiderNode node":return <SettingsSpider nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} resources={nodeInfo.resources} category={nodeInfo.category}/>;
+            case "connectorNode node":return <SettingsConnector nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} connectorKey={nodeInfo.data.connectorKey} category={nodeInfo.data.category}/>
+            case "summarizatorNode node":return <SettingsSummarizator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} compressionDegree={nodeInfo.data.compressionDegree} makeSummary={nodeInfo.data.makeSummary}/>
+            case "prompterNode node":return <SettingsPrompter nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} contentType={nodeInfo.data.contentType} promptTemplate={nodeInfo.data.promptTemplate}/>
+            case "voiceRecognizerNode node":return <SettingsVoiceRecognizer nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} language={nodeInfo.data.language} voiceSplitting={nodeInfo.data.voiceSplitting}  sensitivity={nodeInfo.data.sensitivity}/>
+            case "voiceGeneratorNode node":return <SettingsVoiceGenerator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} language={nodeInfo.data.language}  voice={nodeInfo.data.voice}/>
+            case "imageGeneratorNode node":return <SettingsImageGenerator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} styleType={nodeInfo.data.styleType}  promptText={nodeInfo.data.promptText} division={nodeInfo.data.division}/>
+            case "videoGeneratorNode node":return <SettingsVideoGenerator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} styleType={nodeInfo.data.styleType}  promptText={nodeInfo.data.promptText}/>
+        }
+    }
+
+    const calculateNodesPrice=(node)=>{
+        switch (node.data.label){
+            case 'spiderNode node':return 5
+            case "connectorNode node":return 1
+            case "summarizatorNode node":return 2
+            case "prompterNode node":return 4
+            case "voiceRecognizerNode node":return 3
+            case "voiceGeneratorNode node":return 4
+            case "imageGeneratorNode node":return 4
+            default:return 0
+        }
+    }
+
+    useEffect(()=>{
+        let temp=0;
+        nodes.map((item)=>{
+            temp+=calculateNodesPrice(item)
+        })
+        setTokens(temp)
+    },[nodes])
+
+    const [isRunning,setIsRunning]=useState(false)
+
     return (
         <div className="dndflow">
             <ReactFlowProvider>
@@ -92,12 +155,12 @@ const DnDFlow = () => {
                                 className={'flex items-center justify-center p-2 bg-blue-500 text-white rounded-full font-black'}>
                                 Сохранить
                             </div>
-                            <div
+                            <div onClick={()=>{setIsRunning(true);}}
                                 className={'flex items-center justify-center p-2 bg-green-400 rounded-full font-black'}>
                                 Запустить
                             </div>
                             <div className={'font-black'}>
-                                Осталось токенов: <span className={'text-[#FF0072]'}>{12-nodes.length}</span>
+                                Токенов: <span className={'text-[#FF0072]'}>{tokens}</span>
                             </div>
                         </div>
                     </div>
@@ -107,15 +170,17 @@ const DnDFlow = () => {
                             edges={edges}
                             onNodesChange={onNodesChange}
                             onEdgesChange={onEdgesChange}
+                            onNodesDelete={(nodes)=>{}}
                             onNodeClick={(event, node) => {
-                                console.log(node)
+                                // console.log(nodes,node)
+                                setNodeInfo(null)
                                 setNodeInfo(node)
                             }}
                             defaultEdgeOptions={{
                                 animated: true, markerEnd: {
                                     type: MarkerType.ArrowClosed,
-                                    width: 20,
-                                    height: 20,
+                                    width: 13,
+                                    height: 13,
                                     color: '#FF0072',
                                 }, style: {
                                     strokeWidth: 2,
@@ -132,12 +197,12 @@ const DnDFlow = () => {
                         </ReactFlow>
                     </div>
                 </div>
-                <div className={'w-72 h-full border-l-2 border-[#FF0072] p-2'}>
+                <div className={'w-96 h-full border-l-2 border-[#FF0072] p-2'}>
                     <p className={'text-2xl font-black'}>Настройки для узла</p>
                     {nodeInfo && (<p className={'text-2xl text-[#FF0072] font-black'}>{nodeInfo.data.label}</p>)}
                     {nodeInfo && (
-                        <div className={'border-2 border-[#FF0072] p-2 h-96 mt-4'}>
-                            всякие настройки
+                        <div>
+                            {RenderSettings(nodeInfo)}
                         </div>
                     )}
                 </div>
