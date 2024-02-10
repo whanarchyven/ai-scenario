@@ -118,6 +118,15 @@ export const Sidebar= () => {
                     </div>
                 </div>
             </div>
+            <div className="w-full cursor-grabbing" onDragStart={(event) => onDragStart(event, 'parserNode')}
+                 draggable>
+                <div className={'border-2 border-[#FF9999] p-2 text-[#FF9999] rounded-full'}>
+                    <div className={'flex gap-4 items-center justify-center w-full'}>
+                        <p className={'font-black text-lg'}>Parser</p>
+                        <img className={'w-8 aspect-square'} src={'/nodes_icons/parser.svg'}/>
+                    </div>
+                </div>
+            </div>
         </aside>
     );
 };
