@@ -17,7 +17,7 @@ const ResourceDropDown = (props) => {
             </div>
             {isOpen&& (
                 <div className={'flex absolute w-full top-[150%] flex-col gap-2 bg-white rounded-lg'}>
-                    {categories.map((category) => <div className={'border-y-2 p-1'} onClick={() => {
+                    {categories.map((category) => <div key={category} className={'border-y-2 p-1'} onClick={() => {
                         props.setCategory(category);setIsOpen(false)
                     }}><ResourceTabType category={category}/></div>)}
                 </div>

@@ -55,7 +55,7 @@ const Settings = (props) => {
                 <p>Ресурсы:</p>
                 {resources.map((resource, counter) => {
                     return (
-                        <div className={'flex justify-between gap-3'}>
+                        <div key={counter} className={'flex justify-between gap-3'}>
                             <input value={resource} className={'w-full rounded-lg p-1 text-sm'} onChange={((event) => {
                                 handleChange(event.target.value, counter)
                             })}/>
