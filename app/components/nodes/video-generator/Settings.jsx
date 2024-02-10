@@ -12,6 +12,7 @@ const Settings = (props) => {
 
     const [styleType, setStyleType] = useState(props.styleType ?? 'realistic')
     const [promptText, setPromptText] = useState(props.promptText ?? '')
+    const [duration , setDuration] = useState(props.duration ?? 15)
 
 
     const updateNode = () => {
@@ -19,6 +20,7 @@ const Settings = (props) => {
         let temp = [...props.nodes]
         temp[nodeIndex].data.styleType = styleType
         temp[nodeIndex].data.promptText = promptText
+        temp[nodeIndex].data.duration = duration
         props.updateNodes([...temp]);
     }
 
@@ -37,7 +39,7 @@ const Settings = (props) => {
             <div className={'flex bg-gray-100 p-2 flex-col gap-4'}>
                 <div className={'w-full flex flex-col gap-2'}>
                     <p>Ключевые слова для генерации</p>
-                    <textarea className={'p-1 rounded-lg'} rows={5} value={props.promptText} onChange={(event) => {
+                    <textarea className={'p-1 rounded-lg'} rows={5} value={promptText} onChange={(event) => {
                         setPromptText(event.target.value)
                     }}>
                         {props.promptText}
@@ -52,6 +54,18 @@ const Settings = (props) => {
                         <option value={'animation'}>Анимационный</option>
                         <option value={'gaming'}>Игровой</option>
                     </select>
+                </div>
+                <div className={'w-full flex flex-col gap-2'}>
+                    <p>Длительность: {duration} c.</p>
+                    <input
+                        type="range"
+                        min="3"
+                        max="30"
+                        value={duration}
+                        onChange={(event) => {
+                            setDuration(event.target.value)
+                        }}
+                    />
                 </div>
             </div>
             <div onClick={() => {

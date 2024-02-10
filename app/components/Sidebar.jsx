@@ -100,6 +100,15 @@ export const Sidebar= () => {
                     </div>
                 </div>
             </div>
+            <div className="w-full cursor-grabbing" onDragStart={(event) => onDragStart(event, 'translatorNode')}
+                 draggable>
+                <div className={'border-2 border-[#FFB800] p-2 text-[#FFB800] rounded-full'}>
+                    <div className={'flex gap-4 items-center justify-center w-full'}>
+                        <p className={'font-black text-lg'}>Translator</p>
+                        <img className={'w-8 aspect-square'} src={'/nodes_icons/translator.svg'}/>
+                    </div>
+                </div>
+            </div>
         </aside>
     );
 };
