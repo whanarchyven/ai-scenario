@@ -144,6 +144,7 @@ const DnDFlow = () => {
             case "videoGeneratorNode node":return 5
             case "translatorNode node":return 2
             case "clusterizatorNode node":return 3
+            case "parserNode node":return 3
             default:return 0
         }
     }
