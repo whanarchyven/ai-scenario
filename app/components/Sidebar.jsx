@@ -109,6 +109,15 @@ export const Sidebar= () => {
                     </div>
                 </div>
             </div>
+            <div className="w-full cursor-grabbing" onDragStart={(event) => onDragStart(event, 'clusterizatorNode')}
+                 draggable>
+                <div className={'border-2 border-[#00CCCC] p-2 text-[#00CCCC] rounded-full'}>
+                    <div className={'flex gap-4 items-center justify-center w-full'}>
+                        <p className={'font-black text-lg'}>Clusterizator</p>
+                        <img className={'w-8 aspect-square'} src={'/nodes_icons/clusterizator.svg'}/>
+                    </div>
+                </div>
+            </div>
         </aside>
     );
 };

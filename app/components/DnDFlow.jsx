@@ -23,6 +23,7 @@ import SettingsVoiceGenerator from "@/app/components/nodes/voice-generator/Setti
 import SettingsImageGenerator from "@/app/components/nodes/image-generator/Settings";
 import SettingsVideoGenerator from "@/app/components/nodes/video-generator/Settings";
 import SettingsTranslator from "@/app/components/nodes/translator/Settings"
+import SettingsClusterizator from "@/app/components/nodes/clusterizator/Settings"
 import Connector from "@/app/components/nodes/connector";
 import Summarizator from "@/app/components/nodes/summarizator";
 import Prompter from "@/app/components/nodes/prompter";
@@ -30,6 +31,7 @@ import VoiceGenerator from "@/app/components/nodes/voice-generator";
 import ImageGenerator from "@/app/components/nodes/image-generator";
 import VideoGenerator from "@/app/components/nodes/video-generator";
 import Translator from "@/app/components/nodes/translator";
+import Clusterizator from "@/app/components/nodes/clusterizator";
 
 const initialNodes = [
     {
@@ -56,6 +58,7 @@ const nodeTypes = {
     imageGeneratorNode:ImageGenerator,
     videoGeneratorNode:VideoGenerator,
     translatorNode:Translator,
+    clusterizatorNode:Clusterizator,
 };
 
 
@@ -121,6 +124,7 @@ const DnDFlow = () => {
             case "imageGeneratorNode node":return <SettingsImageGenerator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} styleType={nodeInfo.data.styleType}  promptText={nodeInfo.data.promptText} division={nodeInfo.data.division}/>
             case "videoGeneratorNode node":return <SettingsVideoGenerator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} styleType={nodeInfo.data.styleType} duration={nodeInfo.data.duration} promptText={nodeInfo.data.promptText}/>
             case "translatorNode node":return <SettingsTranslator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} firstLang={nodeInfo.data.firstLang} secondLang={nodeInfo.data.secondLang} dictionary={nodeInfo.data.dictionary}/>
+            case "clusterizatorNode node":return <SettingsClusterizator nodes={nodes} updateNodes={setNodes} nodeId={nodeInfo.id} method={nodeInfo.data.method} sensitivity={nodeInfo.data.sensitivity}/>
         }
     }
 
@@ -134,6 +138,8 @@ const DnDFlow = () => {
             case "voiceGeneratorNode node":return 4
             case "imageGeneratorNode node":return 4
             case "videoGeneratorNode node":return 5
+            case "translatorNode node":return 2
+            case "clusterizatorNode node":return 3
             default:return 0
         }
     }
